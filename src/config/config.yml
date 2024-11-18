@@ -42,6 +42,7 @@ parameters:
     env(ORO_REDIS_DOCTRINE_DSN): '%env(ORO_REDIS_URL)%/2'
     env(ORO_REDIS_LAYOUT_DSN): '%env(ORO_REDIS_URL)%/3'
     env(ORO_TRACKING_DATA_FOLDER): null
+    enterprise_licence: ~
 
 framework:
     #esi:             ~

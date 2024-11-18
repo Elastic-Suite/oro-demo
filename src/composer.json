@@ -33,7 +33,9 @@
     "oro/crm-zendesk": "5.1.*",
     "oro/commerce": "5.1.*",
     "oro/commerce-crm": "5.1.*",
-    "oro/cookie-consent": "5.1.*"
+    "oro/cookie-consent": "5.1.*",
+    "oro/commerce-enterprise": "5.1.0",
+    "oro/platform-enterprise": "5.1.0"
   },
   "require-dev": {
     "behat/behat": "~3.12.0",
