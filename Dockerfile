@@ -11,6 +11,13 @@ RUN microdnf clean all \
     && microdnf -y makecache \
     && microdnf install composer
 
+# Install npm
+RUN touch ~/.bashrc \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash \
+    && source ~/.bashrc \
+    && nvm install 18 \
+    && npm install -g npm@9
+
 COPY docker/php.ini /etc/php.ini
 COPY docker/php-cli.ini /etc/php-cli.ini
 

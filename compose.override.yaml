@@ -1,0 +1,95 @@
+x-depends_on: &default-depends_on
+  "db":
+    condition: service_healthy
+  "elastic":
+    condition: service_healthy
+  "mail":
+    condition: service_started
+
+services:
+  web:
+    ports: !reset []
+    networks:
+      default:
+        aliases:
+          - ${ORO_APP_DOMAIN}
+    labels:
+      - traefik.enable=true
+      # Serve oro over http
+      - traefik.http.routers.oro-http.rule=Host(`${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro-http.entrypoints=http
+      # Serve oro over https
+      - traefik.http.routers.oro-https.rule=Host(`${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro-https.entrypoints=https
+      - traefik.http.routers.oro-https.tls=true
+
+  php-fpm-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: oro_xdebug
+      args:
+        UID: ${UID}
+        GID: ${GID}
+    env_file: .env
+    environment:
+      ORO_ENV: dev
+      ORO_SEARCH_ENGINE_DSN: elastic-search://elastic:9200?prefix=oro_search
+      ORO_WEBSITE_SEARCH_ENGINE_DSN: elastic-search://elastic:9200?prefix=oro_website_search
+      PHP_IDE_CONFIG: "serverName=${ORO_APP_DOMAIN}"
+      XDEBUG_MODE: debug
+      XDEBUG_CONFIG: "client_host=host.docker.internal client_port=9003"
+    depends_on:
+      <<: *default-depends_on
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
+      - gally.local:host-gateway
+    volumes:
+      - root_home:/root
+
+  install:
+    depends_on:
+      <<: *default-depends_on
+
+  restore: &restore
+    depends_on:
+      <<: *default-depends_on
+
+  db:
+    ports:
+      - 5433:5432
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.oro5-db.loadbalancer.server.port=5432
+      # Serve oro over http
+      - traefik.http.routers.oro5-db-http.rule=Host(`database.${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro5-db-http.entrypoints=http
+
+  elastic:
+    image: elasticsearch:8.15.2
+    environment:
+      - cluster.name=es-docker-cluster
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # 512 Mo HEAP
+      - cluster.routing.allocation.disk.threshold_enabled=false # Avoid ES going read-only because low disk space availability
+      - xpack.security.enabled=false # disable ssl security
+      - action.destructive_requires_name=false #Allow to delete indices with wildcard
+    volumes:
+      - es_data8:/usr/share/elasticsearch/data:rw,z
+    healthcheck:
+      test: test $$(curl -k --write-out %{http_code} --fail --silent --output /dev/null http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s) -eq 200
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.oro5-elasticsearch.loadbalancer.server.port=9200
+      # Serve oro over http
+      - traefik.http.routers.oro5-elasticsearch-http.rule=Host(`elastic.${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro5-elasticsearch-http.entrypoints=http
+
+volumes:
+  es_data8: {}
+  root_home: {}

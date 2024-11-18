@@ -1,8 +1,6 @@
 x-depends_on: &default-depends_on
   "db":
     condition: service_healthy
-  "elastic":
-    condition: service_healthy
   "mail":
     condition: service_started
 
@@ -37,6 +35,7 @@ services:
     env_file: .env
     ports:
       - target: 80
+        published: 80
         mode: host
     depends_on:
       "php-fpm-app":
@@ -51,15 +50,6 @@ services:
       - ./src:/var/www/oro
       - private_storage:/var/www/oro/var/data
       - etc_nginx:/etc/nginx
-    labels:
-      - traefik.enable=true
-      # Serve oro over http
-      - traefik.http.routers.oro-http.rule=Host(`${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro-http.entrypoints=http
-      # Serve oro over https
-      - traefik.http.routers.oro-https.rule=Host(`${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro-https.entrypoints=https
-      - traefik.http.routers.oro-https.tls=true
 
   php-fpm-app:
     build:
@@ -93,6 +83,8 @@ services:
         GID: ${GID}
     command: console gos:websocket:server -v
     env_file: .env
+    environment:
+      ORO_APP_DOMAIN: ${ORO_APP_DOMAIN}
     user: $ORO_USER_RUNTIME
     init: true
     depends_on:
@@ -187,30 +179,6 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  elastic:
-    image: elasticsearch:8.15.2
-    environment:
-      - cluster.name=es-docker-cluster
-      - bootstrap.memory_lock=true
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # 512 Mo HEAP
-      - cluster.routing.allocation.disk.threshold_enabled=false # Avoid ES going read-only because low disk space availability
-      - xpack.security.enabled=false # disable ssl security
-      - action.destructive_requires_name=false #Allow to delete indices with wildcard
-    volumes:
-      - es_data8:/usr/share/elasticsearch/data:rw,z
-    healthcheck:
-      test: test $$(curl -k --write-out %{http_code} --fail --silent --output /dev/null http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s) -eq 200
-      interval: 10s
-      timeout: 5s
-      retries: 20
-    labels:
-      - traefik.enable=true
-      - traefik.http.services.oro5-elasticsearch.loadbalancer.server.port=9200
-      # Serve oro over http
-      - traefik.http.routers.oro5-elasticsearch-http.rule=Host(`elastic.${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro5-elasticsearch-http.entrypoints=http
-
   mail:
     image: mailhog/mailhog
     hostname: mail
@@ -223,7 +191,6 @@ volumes:
   private_storage: {}
   etc_nginx: {}
   run_php_fpm: {}
-  es_data8: {}
   db_data: {}
   cache: {}
   public_storage: {}

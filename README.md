@@ -3,8 +3,34 @@
 ## How to use this env
 
 ```shell
+git clone git@github.com:Elastic-Suite/oro-demo.git
+cd oro-demo
+docker compose run --rm php-fpm-app bash -c "source ~/.bashrc; composer install"
+mkdir src/public/media
+sudo chown ubuntu:ubuntu -R src
 docker compose up install
 docker compose up -d
+```
+
+Add gally plugin
+```shell
+cd oro-demo
+git clone git@github.com:Elastic-Suite/gally-oro-connector.git src/packages/GallyPlugin
+docker compose exec php-fpm-app composer repositories.gally-connector '{ "type": "path", "url": "./packages/GallyPlugin", "options": { "versions": { "gally/oro-plugin": "2.0.0"}} }'
+docker compose exec php-fpm-app composer require gally/oro-plugin:2.0.0
+```
+
+Add oro enterprise packages
+```shell
+cd oro-demo
+docker compose exec php-fpm-app composer require oro/commerce-enterprise:5.1.0 oro/platform-enterprise:5.1.0
+```
+
+Use static analysis tools
+```shell
+bin/php-cs-fixer fix --diff packages/GallyPlugin/
+bin/phpstan --memory-limit=1G analyse -c packages/GallyPlugin/phpstan.neon
+bin/phpunit --config phpunit.xml.dist packages/GallyPlugin/ --stop-on-fail
 ```
 
 ## How this env was build
