@@ -1,0 +1,38 @@
+[oel8-baseos]
+name=Oracle EL-8 baseos - $releasever
+baseurl=https://nexus-proxy.oro.cloud/repository/oel-baseos/el8/
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-nxrm,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-obs,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oro
+
+[oel8-appstream]
+name=Oracle EL-8 appstream - $releasever
+baseurl=https://nexus-proxy.oro.cloud/repository/oel-appstream/el8/
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-nxrm,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-obs,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oro
+
+[oel8-developer]
+name=Oracle EL-8 Developer - $releasever
+baseurl=https://nexus-proxy.oro.cloud/repository/oel-developer/el8/
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-nxrm,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-obs,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oro
+
+[remi-modular]
+name=Remi's modular RPM repository for Enterprise Linux 8 - x86_64
+baseurl=https://nexus-proxy.oro.cloud/repository/remi-modular-20240415/el8/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi2018
+
+[remi]
+name=Remi's RPM repository for Enterprise Linux 8 - x86_64
+baseurl=https://nexus-proxy.oro.cloud/repository/remi-20240415/el8/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-nxrm,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-obs,file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oro
+module_hotfixes=1
