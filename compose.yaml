@@ -1,6 +1,8 @@
 x-depends_on: &default-depends_on
   "db":
     condition: service_healthy
+  "elastic":
+    condition: service_healthy
   "mail":
     condition: service_started
 
@@ -176,6 +178,28 @@ services:
       start_period: 60s
     volumes:
       - db_data:/var/lib/postgresql/data
+
+  elastic:
+    image: elasticsearch:8.15.2
+    environment:
+      - cluster.name=es-docker-cluster
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # 512 Mo HEAP
+      - cluster.routing.allocation.disk.threshold_enabled=false # Avoid ES going read-only because low disk space availability
+      - xpack.security.enabled=false # disable ssl security
+      - action.destructive_requires_name=false #Allow to delete indices with wildcard
+    volumes:
+      - es_data8:/usr/share/elasticsearch/data:rw,z
+    healthcheck:
+      test: test $$(curl -k --write-out %{http_code} --fail --silent --output /dev/null http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s) -eq 200
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    ports:
+      - target: 9200
+        published: 9203
+        mode: host
 
   mail:
     image: mailhog/mailhog
