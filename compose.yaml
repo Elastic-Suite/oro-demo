@@ -37,7 +37,6 @@ services:
     env_file: .env
     ports:
       - target: 80
-        published: 80
         mode: host
     depends_on:
       "php-fpm-app":
@@ -52,6 +51,15 @@ services:
       - ./src:/var/www/oro
       - private_storage:/var/www/oro/var/data
       - etc_nginx:/etc/nginx
+    labels:
+      - traefik.enable=true
+      # Serve oro over http
+      - traefik.http.routers.oro-http.rule=Host(`${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro-http.entrypoints=http
+      # Serve oro over https
+      - traefik.http.routers.oro-https.rule=Host(`${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro-https.entrypoints=https
+      - traefik.http.routers.oro-https.tls=true
 
   php-fpm-app:
     build:
@@ -196,10 +204,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 20
-    ports:
-      - target: 9200
-        published: 9203
-        mode: host
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.oro5-elasticsearch.loadbalancer.server.port=9200
+      # Serve oro over http
+      - traefik.http.routers.oro5-elasticsearch-http.rule=Host(`elastic.${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro5-elasticsearch-http.entrypoints=http
 
   mail:
     image: mailhog/mailhog

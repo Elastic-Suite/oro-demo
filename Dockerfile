@@ -19,6 +19,8 @@ RUN rm -rf /run/php-fpm \
     && mkdir /run/php-fpm \
     && chown www-data:www-data /run/php-fpm /var/www/oro/var/cache /var/www/oro/var/data
 
+EXPOSE 80
+
 FROM oro_dev as oro_xdebug
 
 USER root
