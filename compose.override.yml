@@ -8,20 +8,23 @@ x-depends_on: &default-depends_on
 
 services:
   web:
-    ports: !reset []
+    ports: !reset
+      - target: 80
+        mode: host
     networks:
       default:
         aliases:
           - ${ORO_APP_DOMAIN}
     labels:
       - traefik.enable=true
+      - traefik.http.services.oro5-web.loadbalancer.server.port=80
       # Serve oro over http
-      - traefik.http.routers.oro-http.rule=Host(`${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro-http.entrypoints=http
+      - traefik.http.routers.oro5-web-http.rule=Host(`${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro5-web-http.entrypoints=http
       # Serve oro over https
-      - traefik.http.routers.oro-https.rule=Host(`${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro-https.entrypoints=https
-      - traefik.http.routers.oro-https.tls=true
+      - traefik.http.routers.oro5-web-https.rule=Host(`${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro5-web-https.entrypoints=https
+      - traefik.http.routers.oro5-web-https.tls=true
 
   php-fpm-app:
     build:
@@ -45,6 +48,7 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
       - gally.local:host-gateway
+      - gally.connector.local:host-gateway
     volumes:
       - root_home:/root
 

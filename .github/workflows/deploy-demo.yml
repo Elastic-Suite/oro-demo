@@ -1,0 +1,40 @@
+name: Deploy demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-demo:
+    name: Deploy demo
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Deploy in EC2
+        env:
+          BRANCH: ${{ format('origin/{0}', github.ref_name) }}
+          PRIVATE_KEY: ${{ secrets.AWS_DEPLOY_KEY }}
+          HOSTNAME : ${{ secrets.AWS_HOSTNAME }}
+          USER_NAME : ${{ secrets.AWS_USER }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} "
+            cd /home/ubuntu/ &&
+            [ -d oro ] || git clone https://github.com/Elastic-Suite/oro-demo.git oro &&
+            cd /home/ubuntu/oro &&
+            [ -d src/packages/GallyPlugin ] || git clone https://github.com/Elastic-Suite/gally-oro-connector.git src/packages/GallyPlugin &&
+            docker system prune -af &&
+            ([[ $(docker volume ls -q | awk '!/_/' | wc -l) -eq 0 ]] || docker volume rm $(docker volume ls -q | awk '!/_/' | tr '\n' ' ')) &&
+            docker compose down &&
+            git fetch --all && git reset --hard && git checkout ${{ env.BRANCH }} &&
+            cd /home/ubuntu/oro/src/packages/GallyPlugin &&
+            git fetch --all && git reset --hard && git checkout ${{ env.BRANCH }} &&
+            cd /home/ubuntu/oro &&
+            docker compose -f compose.yml run --rm php-fpm-app bash -c "source ~/.bashrc; composer install" &&
+            mkdir -p src/public/media &&
+            sudo chown ubuntu:ubuntu -R src &&
+            docker compose -f compose.yml up install &&
+            docker compose -f compose.yml up -d --build && 
+            docker compose exec php-fpm-app composer repositories.gally-connector '{ "type": "path", "url": "./packages/GallyPlugin", "options": { "versions": { "gally/oro-plugin": "2.0.0"}} }' &&
+            docker compose exec php-fpm-app composer require gally/oro-plugin:2.0.0 &&
+            docker compose exec php-fpm-app bin/console cache:clear
+          "
