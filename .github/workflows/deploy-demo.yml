@@ -2,6 +2,12 @@ name: Deploy demo
 
 on:
   workflow_dispatch:
+    inputs:
+      reset_database:
+        description: 'Reset database ?'
+        type: boolean
+        default: false
+        required: false
 
 jobs:
   deploy-demo:
@@ -15,6 +21,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.AWS_DEPLOY_KEY }}
           HOSTNAME : ${{ secrets.AWS_HOSTNAME }}
           USER_NAME : ${{ secrets.AWS_USER }}
+          RESET_DB : ${{ inputs.reset_database }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} "
@@ -25,16 +32,19 @@ jobs:
             docker system prune -af &&
             ([[ $(docker volume ls -q | awk '!/_/' | wc -l) -eq 0 ]] || docker volume rm $(docker volume ls -q | awk '!/_/' | tr '\n' ' ')) &&
             docker compose down &&
+            git remote -v &&
             git fetch --all && git reset --hard && git checkout ${{ env.BRANCH }} &&
             cd /home/ubuntu/oro/src/packages/GallyPlugin &&
+            git remote -v &&
             git fetch --all && git reset --hard && git checkout ${{ env.BRANCH }} &&
             cd /home/ubuntu/oro &&
-            docker compose -f compose.yml run --rm php-fpm-app bash -c "source ~/.bashrc; composer install" &&
+            docker compose -f compose.yml run --rm php-fpm-app bash -c 'npm install; composer install' &&
             mkdir -p src/public/media &&
             sudo chown ubuntu:ubuntu -R src &&
-            docker compose -f compose.yml up install &&
+            echo 'Reset db value: ${RESET_DB}' &&
+            [ -z ${RESET_DB} ] || docker compose -f compose.yml up restore &&
             docker compose -f compose.yml up -d --build && 
-            docker compose exec php-fpm-app composer repositories.gally-connector '{ "type": "path", "url": "./packages/GallyPlugin", "options": { "versions": { "gally/oro-plugin": "2.0.0"}} }' &&
+            docker compose exec php-fpm-app composer config repositories.gally-connector '{ \"type\": \"path\", \"url\": \"./packages/GallyPlugin\", \"options\": { \"versions\": { \"gally/oro-plugin\": \"2.0.0\"}} }' &&
             docker compose exec php-fpm-app composer require gally/oro-plugin:2.0.0 &&
             docker compose exec php-fpm-app bin/console cache:clear
           "

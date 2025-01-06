@@ -16,7 +16,9 @@ RUN touch ~/.bashrc \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash \
     && source ~/.bashrc \
     && nvm install 18 \
-    && npm install -g npm@9
+    && npm install -g npm@9 \
+    && ln -s /root/.nvm/versions/node/v18.20.5/bin/node /usr/bin/node \
+    && ln -s /root/.nvm/versions/node/v18.20.5/bin/npm /usr/bin/npm
 
 COPY docker/php.ini /etc/php.ini
 COPY docker/php-cli.ini /etc/php-cli.ini
