@@ -36,7 +36,6 @@ services:
         GID: ${GID}
     env_file: .env
     environment:
-      ORO_ENV: dev
       ORO_SEARCH_ENGINE_DSN: elastic-search://elastic:9200?prefix=oro_search
       ORO_WEBSITE_SEARCH_ENGINE_DSN: elastic-search://elastic:9200?prefix=oro_website_search
       PHP_IDE_CONFIG: "serverName=${ORO_APP_DOMAIN}"
@@ -47,8 +46,7 @@ services:
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
-      - gally.local:host-gateway
-      - gally.connector.local:host-gateway
+      - $GALLY_SERVER_NAME:host-gateway
     volumes:
       - root_home:/root
 

@@ -24,13 +24,7 @@ services:
         condition: service_started
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: oro_dev
-      args:
-        UID: ${UID}
-        GID: ${GID}
+    image: $ORO_IMAGE:$ORO_IMAGE_TAG
     command: nginx
     env_file: .env
     ports:
@@ -48,6 +42,8 @@ services:
           - ${ORO_APP_DOMAIN}
     volumes:
       - ./src:/var/www/oro
+      - var:/var/www/oro/var
+      - public_storage:/var/www/oro/public/media
       - private_storage:/var/www/oro/var/data
       - etc_nginx:/etc/nginx
 
@@ -70,6 +66,8 @@ services:
       <<: *default-depends_on
     volumes:
       - ./src:/var/www/oro
+      - var:/var/www/oro/var
+      - public_storage:/var/www/oro/public/media
       - private_storage:/var/www/oro/var/data
       - run_php_fpm:/run/php-fpm
 
@@ -92,6 +90,8 @@ services:
         condition: service_healthy
     volumes:
       - ./src:/var/www/oro
+      - var:/var/www/oro/var
+      - public_storage:/var/www/oro/public/media
       - private_storage:/var/www/oro/var/data
 
   consumer:
@@ -111,6 +111,8 @@ services:
         condition: service_healthy
     volumes:
       - ./src:/var/www/oro
+      - var:/var/www/oro/var
+      - public_storage:/var/www/oro/public/media
       - private_storage:/var/www/oro/var/data
 
   cron:
@@ -133,6 +135,8 @@ services:
         condition: service_healthy
     volumes:
       - ./src:/var/www/oro
+      - var:/var/www/oro/var
+      - public_storage:/var/www/oro/public/media
       - private_storage:/var/www/oro/var/data
 
   install:
@@ -150,6 +154,8 @@ services:
       <<: *default-depends_on
     volumes:
       - ./src:/var/www/oro
+      - var_install:/var/www/oro/var
+      - public_storage:/var/www/oro/public/media
       - private_storage:/var/www/oro/var/data
 
   restore: &restore
@@ -160,7 +166,8 @@ services:
     depends_on:
       <<: *default-depends_on
     volumes:
-      - cache:/var/www/oro/var/cache
+      - ./src:/var/www/oro
+      - var:/var/www/oro/var
       - public_storage:/var/www/oro/public/media
       - private_storage:/var/www/oro/var/data
 
@@ -188,9 +195,12 @@ services:
       MH_MAILDIR_PATH: /home/mailhog/maildir
 
 volumes:
+  cache: {}
+  public: {}
   private_storage: {}
   etc_nginx: {}
   run_php_fpm: {}
   db_data: {}
-  cache: {}
+  var: {}
+  var_install: {}
   public_storage: {}

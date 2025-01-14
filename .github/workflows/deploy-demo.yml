@@ -38,13 +38,10 @@ jobs:
             git remote -v &&
             git fetch --all && git reset --hard && git checkout ${{ env.BRANCH }} &&
             cd /home/ubuntu/oro &&
-            docker compose -f compose.yml run --rm php-fpm-app bash -c 'npm install; composer install' &&
-            mkdir -p src/public/media &&
-            sudo chown ubuntu:ubuntu -R src &&
+            docker compose -f compose.yml run --rm install composer install --no-dev &&
+            docker compose -f compose.yml run --rm install composer config repositories.gally-connector '{ \"type\": \"path\", \"url\": \"./packages/GallyPlugin\", \"options\": { \"versions\": { \"gally/oro-plugin\": \"2.0.0\"}} }' &&
+            docker compose -f compose.yml run --rm install composer require gally/oro-plugin:2.0.0
             echo 'Reset db value: ${RESET_DB}' &&
-            [ -z ${RESET_DB} ] || docker compose -f compose.yml up restore &&
-            docker compose -f compose.yml up -d --build && 
-            docker compose exec php-fpm-app composer config repositories.gally-connector '{ \"type\": \"path\", \"url\": \"./packages/GallyPlugin\", \"options\": { \"versions\": { \"gally/oro-plugin\": \"2.0.0\"}} }' &&
-            docker compose exec php-fpm-app composer require gally/oro-plugin:2.0.0 &&
-            docker compose exec php-fpm-app bin/console cache:clear
+            [ -z ${RESET_DB} ] || docker compose -f compose.yml up install &&
+            docker compose -f compose.yml up -d --build
           "

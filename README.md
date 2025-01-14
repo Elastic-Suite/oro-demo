@@ -1,48 +1,65 @@
-# Run Oro Application Demo in Docker
+# Demo oro environment
 
-## How to use this env
+## How to use this environment
 
-```shell
-git clone git@github.com:Elastic-Suite/oro-demo.git
-cd oro-demo
-docker compose run --rm php-fpm-app bash -c "source ~/.bashrc; composer install"
-mkdir src/public/media
-sudo chown ubuntu:ubuntu -R src
-docker compose up install
-docker compose up -d
-```
+* Clone oro demo repo:
+    ```shell
+    git clone git@github.com:Elastic-Suite/oro-demo.git connectors/oro
+    cd connectors/oro
+    ```
 
-Add gally plugin
-```shell
-cd oro-demo
-git clone git@github.com:Elastic-Suite/gally-oro-connector.git src/packages/GallyPlugin
-docker compose exec php-fpm-app composer repositories.gally-connector '{ "type": "path", "url": "./packages/GallyPlugin", "options": { "versions": { "gally/oro-plugin": "2.0.0"}} }'
-docker compose exec php-fpm-app composer require gally/oro-plugin:2.0.0
-```
+* Edit .env file and update the value of :
 
-Add oro enterprise packages
-```shell
-cd oro-demo
-docker compose exec php-fpm-app composer require oro/commerce-enterprise:5.1.0 oro/platform-enterprise:5.1.0
-```
+| Var                 | Description                           | Example value             |
+|---------------------|---------------------------------------|---------------------------|
+| `UID`               | Your user id                          | 1000                      |
+| `GID`               | Your group id                         | 1000                      |
+| `ORO_APP_DOMAIN`    | The oro domain you want to use        | oro.connector.localhost   |
+| `GALLY_SERVER_NAME` | The server name you defined for gally | gally.connector.localhost |
 
-Use static analysis tools
-```shell
-bin/php-cs-fixer fix --diff packages/GallyPlugin/
-bin/phpstan --memory-limit=1G analyse -c packages/GallyPlugin/phpstan.neon
-bin/phpunit --config phpunit.xml.dist packages/GallyPlugin/ --stop-on-fail
-```
-Create/edit js files
-```shell
-docker compose exec php-fpm-app bin/console oro:assets:install --relative-symlink # Only required once on js creation
-docker compose exec php-fpm-app bin/console oro:assets:build --watch
-```
+* Install composer dependencies
+    ```shell
+    docker compose run --rm install composer install --no-dev
+    docker compose run --rm install composer config github-oauth.github.com [Your Token]
+    docker compose run --rm install composer require oro/platform-enterprise:5.1.0 oro/crm-enterprise:5.1.0 oro/commerce-enterprise:5.1.0  
+    ```
+
+* Add gally plugin
+    ```shell
+    git clone git@github.com:Elastic-Suite/gally-oro-connector.git src/packages/GallyPlugin
+    docker compose run --rm install composer config repositories.gally-connector '{ "type": "path", "url": "./packages/GallyPlugin", "options": { "versions": { "gally/oro-plugin": "2.0.0"}} }'
+    docker compose run --rm install composer require gally/oro-plugin:2.0.0
+    ```
+The admin theme build will probably failed for seller_dashboard bundle.
+
+* Start your traefik if it is not already running
+* Install Oro
+
+    ```shell
+    docker compose up install
+    docker compose up -d
+    ```
+  > After this step you should have a running oro instance
+  > * Backend: https://oro.connector.localhost/admin
+  > * Frontend: https://oro.connector.localhost/
+
+* Use static analysis tools
+  ```shell
+  bin/php-cs-fixer fix --diff packages/GallyPlugin/
+  bin/phpstan --memory-limit=1G analyse -c packages/GallyPlugin/phpstan.neon
+  bin/phpunit --config phpunit.xml.dist packages/GallyPlugin/ --stop-on-fail
+  ```
+* Create/edit js files
+  ```shell
+  docker compose exec php-fpm-app bin/console oro:assets:install --relative-symlink # Only required once on js creation
+  docker compose exec php-fpm-app bin/console oro:assets:build --watch
+  ``` 
 
 ## How this env was build
 
 ```shell
 git clone https://github.com/oroinc/docker-demo.git oro-demo
-git checkout a790d44727fb25411687199dca89f4864e793fdf # last commit before oro 6.0
+git checkout 5.1.0
 rm -rf .git
 git init
 git remote add origiin git@github.com:Elastic-Suite/oro-demo.git
