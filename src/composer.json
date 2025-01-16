@@ -72,7 +72,8 @@
       "symfony/runtime": true,
       "symfony/flex": true,
       "php-http/discovery": false
-    }
+    },
+    "process-timeout": 900
   },
   "scripts": {
     "post-install-cmd": [

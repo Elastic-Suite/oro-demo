@@ -24,24 +24,26 @@ jobs:
           RESET_DB : ${{ inputs.reset_database }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} "
+          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -i private_key ${USER_NAME}@${HOSTNAME} "
             cd /home/ubuntu/ &&
             [ -d oro ] || git clone https://github.com/Elastic-Suite/oro-demo.git oro &&
             cd /home/ubuntu/oro &&
             [ -d src/packages/GallyPlugin ] || git clone https://github.com/Elastic-Suite/gally-oro-connector.git src/packages/GallyPlugin &&
             docker system prune -af &&
             ([[ $(docker volume ls -q | awk '!/_/' | wc -l) -eq 0 ]] || docker volume rm $(docker volume ls -q | awk '!/_/' | tr '\n' ' ')) &&
-            docker compose down &&
+            docker compose -f compose.yml down &&
             git remote -v &&
             git fetch --all && git reset --hard && git checkout ${{ env.BRANCH }} &&
             cd /home/ubuntu/oro/src/packages/GallyPlugin &&
             git remote -v &&
             git fetch --all && git reset --hard && git checkout ${{ env.BRANCH }} &&
             cd /home/ubuntu/oro &&
-            docker compose -f compose.yml run --rm install composer install --no-dev &&
+            docker compose -f compose.yml build && 
+            docker compose -f compose.yml run --rm install composer install --no-dev && 
             docker compose -f compose.yml run --rm install composer config repositories.gally-connector '{ \"type\": \"path\", \"url\": \"./packages/GallyPlugin\", \"options\": { \"versions\": { \"gally/oro-plugin\": \"2.0.0\"}} }' &&
             docker compose -f compose.yml run --rm install composer require gally/oro-plugin:2.0.0
             echo 'Reset db value: ${RESET_DB}' &&
-            [ -z ${RESET_DB} ] || docker compose -f compose.yml up install &&
-            docker compose -f compose.yml up -d --build
+            [ -z ${RESET_DB} ] || docker compose -f compose.yml down -v &&
+            [ -z ${RESET_DB} ] || ORO_APP_DOMAIN=$HOSTNAME  docker compose -f compose.yml up install &&
+            ORO_APP_DOMAIN=$HOSTNAME docker compose -f compose.yml up -d
           "
