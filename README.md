@@ -10,12 +10,12 @@
 
 * Edit .env file and update the value of :
 
-| Var                 | Description                           | Example value             |
-|---------------------|---------------------------------------|---------------------------|
-| `UID`               | Your user id                          | 1000                      |
-| `GID`               | Your group id                         | 1000                      |
-| `ORO_APP_DOMAIN`    | The oro domain you want to use        | oro.connector.localhost   |
-| `GALLY_SERVER_NAME` | The server name you defined for gally | gally.connector.localhost |
+| Var                 | Description                           | Example value           |
+|---------------------|---------------------------------------|-------------------------|
+| `UID`               | Your user id                          | 1000                    |
+| `GID`               | Your group id                         | 1000                    |
+| `ORO_APP_DOMAIN`    | The oro domain you want to use        | oro.connector.localhost |
+| `GALLY_SERVER_NAME` | The server name you defined for gally | gally.connector.local   |
 
 * Install composer dependencies
     ```shell
@@ -30,7 +30,6 @@
     docker compose run --rm install composer config repositories.gally-connector '{ "type": "path", "url": "./packages/GallyPlugin", "options": { "versions": { "gally/oro-plugin": "2.0.0"}} }'
     docker compose run --rm install composer require gally/oro-plugin:2.0.0
     ```
-The admin theme build will probably failed for seller_dashboard bundle.
 
 * Start your traefik if it is not already running
 * Install Oro
