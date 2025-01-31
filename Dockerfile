@@ -16,11 +16,11 @@ RUN touch ~/.bashrc \
     && mkdir /var/nvm /usr/share/httpd/.npm\
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | NVM_DIR="/var/nvm" bash \
     && source ~/.bashrc \
-    && nvm install 18 \
+    && nvm install 18.20.6 \
     && npm install -g npm@9.3.1 \
-    && chmod a+x /var/nvm/versions/node/v18.20.5/bin/* \
-    && ln -s /var/nvm/versions/node/v18.20.5/bin/node /usr/bin/node \
-    && ln -s /var/nvm/versions/node/v18.20.5/bin/npm /usr/bin/npm \
+    && chmod a+x /var/nvm/versions/node/v18.20.6/bin/* \
+    && ln -s /var/nvm/versions/node/v18.20.6/bin/node /usr/bin/node \
+    && ln -s /var/nvm/versions/node/v18.20.6/bin/npm /usr/bin/npm \
     && chmod a+wx -R /usr/share/httpd/.npm
 
 COPY docker/php.ini /etc/php.ini
