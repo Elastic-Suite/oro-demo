@@ -38,13 +38,15 @@ monolog:
 
         streamed:
             type:           stream
-            path:           "%kernel.logs_dir%/%kernel.environment%.log"
+            path:           "%log_path%"
             level:          debug
 
         deduplicated:
             type:           deduplication
             handler:        symfony_mailer
             time:           10
+            store:          "%kernel.logs_dir%/deduplicated.log"
+
         symfony_mailer:
             type:           symfony_mailer
             email_prototype:
@@ -52,4 +54,3 @@ monolog:
                 method:     createEmail
             level:          debug
             formatter:      monolog.formatter.html
-

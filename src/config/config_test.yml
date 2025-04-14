@@ -10,10 +10,10 @@ parameters:
 framework:
     test: ~
     session:
-        storage_id: session.storage.mock_file
+        storage_factory_id: session.storage.factory.mock_file
     csrf_protection: true
     profiler:
-        enabled: false
+        enabled: "%profiler.enabled%"
     mailer:
         transports:
             main: 'null://null'
@@ -29,7 +29,7 @@ monolog:
             channels: [ "!event" ]
         nested:
             type: stream
-            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            path: "%log_path%"
             level: debug
             channels: '%main_log_channels%'
 
@@ -52,6 +52,10 @@ twig:
     debug: false
 
 oro_search:
+    engine_parameters:
+        force_refresh: true
+
+oro_website_search:
     engine_parameters:
         force_refresh: true
 

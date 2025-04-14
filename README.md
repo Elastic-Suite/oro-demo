@@ -19,9 +19,9 @@
 
 * Install composer dependencies
     ```shell
-    docker compose run --rm install composer install --no-dev
+    docker compose run --rm install composer install
     docker compose run --rm install composer config github-oauth.github.com [Your Token]
-    docker compose run --rm install composer require oro/platform-enterprise:5.1.0 oro/crm-enterprise:5.1.0 oro/commerce-enterprise:5.1.0  
+    docker compose run --rm install composer require oro/platform-enterprise:6.0.2 oro/crm-enterprise:6.0.2 oro/commerce-enterprise:6.0.2 
     ```
 
 * Add gally plugin
@@ -58,16 +58,13 @@
 
 ```shell
 git clone https://github.com/oroinc/docker-demo.git oro-demo
-git checkout 5.1.0
+git checkout 6.0
 rm -rf .git
 git init
 git remote add origiin git@github.com:Elastic-Suite/oro-demo.git
 
-docker compose up install
-docker compose up -d
-docker compose cp php-fpm-app:/var/www/oro/ ./
-mv oro src
-
+# Create a auth.json file with oro gituhb token (cf vault)
+composer create-project oro/commerce-crm-enterprise-application src 6.0.2 --repository=https://packagist.oroinc.com
 # Add user id / group id in .env
 ```
 

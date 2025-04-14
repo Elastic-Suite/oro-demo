@@ -1,4 +1,4 @@
-Please check the release notes at [GitHub](https://github.com/oroinc/orocommerce-application/releases) for the list of new features and changes to the existing features of OroCommerce application.
+Please check the release notes at [GitHub](https://github.com/oroinc/orocommerce-enterprise-application/releases) for the list of new features and changes to the existing features of OroCommerce application.
 
 The CHANGELOG.md files of the individual packages comprising this application describe significant changes in the code that may affect the upgrade of your customizations.
 

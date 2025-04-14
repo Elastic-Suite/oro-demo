@@ -18,6 +18,34 @@ services:
       timeout: 30s
       start_period: 40s
     restart: on-failure
+  rabbitmq:
+    image: oroinc/rabbitmq:3.9-1-alpine
+    ports: ['5672']
+    labels:
+      com.symfony.server.service-prefix: ORO_MQ
+    environment:
+      RABBITMQ_DEFAULT_USER: oro_mq_user
+      RABBITMQ_DEFAULT_PASS: oro_mq_pass
+    restart: on-failure
+  elasticsearch:
+    image: elasticsearch:8.4.1
+    command: bin/elasticsearch -Eingest.geoip.downloader.enabled=false
+    environment:
+      discovery.type: "single-node"
+      cluster.name: docker-cluster
+      bootstrap.memory_lock: "true"
+      network.host: 0.0.0.0
+      path.repo: "/tmp"
+      ES_JAVA_OPTS: -Xms2g -Xmx2g
+      xpack.security.enabled: "false"
+      xpack.security.http.ssl.enabled: "false"
+      xpack.security.transport.ssl.enabled: "false"
+    ports: ["9200", "9300"]
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    labels:
+      com.symfony.server.service-prefix: ORO_SEARCH
+    restart: on-failure
   redis:
     image: redis:6-alpine
     ports: ["6379"]
@@ -28,5 +56,14 @@ services:
     ports: ['1025', '1080']
     labels:
       com.symfony.server.service-prefix: ORO_MAILER
+  mongodb:
+    image: mongo:5.0
+    ports: ["27017"]
+    labels:
+      com.symfony.server.service-prefix: ORO_MONGODB
+    volumes:
+      - mongodb:/data/db
 volumes:
   postgres: {}
+  elasticsearch: {}
+  mongodb: {}

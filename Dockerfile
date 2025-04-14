@@ -1,51 +1,61 @@
-FROM oroinc/orocommerce-application:5.1.0 as oro_dev
+FROM oraclelinux:8 as builder
+
+RUN dnf install -y \
+    https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    dnf install -y \
+    https://rpms.remirepo.net/enterprise/remi-release-8.rpm
+
+RUN dnf module reset -y php && \
+    dnf module enable -y php:remi-8.3
+
+RUN dnf install -y curl make php php-cli php-xdebug && \
+    dnf clean all
+
+FROM oroinc/orocommerce-application:6.0.2 as oro_dev
 
 USER root
 ARG UID
 ARG GID
 
-# Add repolist
-COPY docker/yum.repolist /etc/yum.repos.d/oraclelinux.repo
-
-RUN microdnf clean all \
-    && microdnf -y makecache \
-    && microdnf install composer
+COPY --from=builder /usr/bin/make /usr/bin/make
+#COPY --from=builder /usr/bin/git /usr/bin/git
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install npm
 RUN touch ~/.bashrc \
-    && mkdir /var/nvm /usr/share/httpd/.npm\
+    && mkdir -p /var/nvm /usr/share/httpd/.npm\
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | NVM_DIR="/var/nvm" bash \
     && source ~/.bashrc \
-    && nvm install 18.20.6 \
-    && npm install -g npm@9.3.1 \
-    && chmod a+x /var/nvm/versions/node/v18.20.6/bin/* \
-    && ln -s /var/nvm/versions/node/v18.20.6/bin/node /usr/bin/node \
-    && ln -s /var/nvm/versions/node/v18.20.6/bin/npm /usr/bin/npm \
-    && chmod a+wx -R /usr/share/httpd/.npm
-
-COPY docker/php.ini /etc/php.ini
-COPY docker/php-cli.ini /etc/php-cli.ini
+    && nvm install 20.19.0 \
+    && chmod a+x /var/nvm/versions/node/v20.19.0/bin/* \
+    && chmod a+wx -R /usr/share/httpd/.npm \
+    && ln -s /var/nvm/versions/node/v20.19.0/bin/node /usr/bin/node \
+    && ln -s /var/nvm/versions/node/v20.19.0/bin/npm /usr/bin/npm \
+    && ln -s /var/nvm/versions/node/v20.19.0/bin/npx /usr/bin/npx
 
 RUN usermod -u ${UID} www-data && groupmod -g ${GID} www-data
-RUN rm -rf /run/php-fpm \
-    && mkdir /run/php-fpm \
-    && chown www-data:www-data -R /run/php-fpm /var/www/oro/var /var/www/oro/public
+RUN mkdir -p /home/www-data /run/php-fpm /var/log/nginx/ /var/www/oro/public /var/www/oro/var/cache /var/www/oro/var/logs
+RUN chown www-data:www-data -R /etc/security /home/www-data /run/php-fpm /var/log/nginx /var/www/oro/public /var/www/oro/var
+
+WORKDIR /var/www/oro
 
 USER www-data
 
 EXPOSE 80
 
+FROM oro_dev as oro_cron
+
+USER root
+
 FROM oro_dev as oro_xdebug
 
 USER root
 
-RUN microdnf install php-pecl-xdebug
-
+COPY --from=builder /usr/lib64/php/modules/xdebug.so /usr/lib64/php/modules/xdebug.so
 RUN echo "zend_extension=xdebug.so" > /etc/php.d/15-xdebug.ini && \
     echo "xdebug.mode=debug" >> /etc/php.d/15-xdebug.ini && \
-    echo "xdebug.remote_enable=1" >> /etc/php.d/15-xdebug.ini && \
-    echo "xdebug.remote_host=host.docker.internal" >> /etc/php.d/15-xdebug.ini && \
-    echo "xdebug.remote_port=9003" >> /etc/php.d/15-xdebug.ini && \
+    echo "xdebug.client_host=host.docker.internal" >> /etc/php.d/15-xdebug.ini && \
+    echo "xdebug.client_port=9003" >> /etc/php.d/15-xdebug.ini && \
     echo "opcache.enable=0" >> /etc/php.d/15-xdebug.ini
 
 USER www-data

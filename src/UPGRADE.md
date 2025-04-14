@@ -4,6 +4,14 @@ This file includes only the most important items that should be addressed before
 
 Please also refer to [CHANGELOG.md](CHANGELOG.md) for a list of significant changes in the code that may affect the upgrade of some customizations.
 
+### 5.1.3
+
+Fixed issue in Merge by Priority strategy optimization when pre-calculated CPL was used. 
+It is recommended to rebuild CPL's if Merge by Priority strategy is used:
+
+- Run sql query `DELETE FROM oro_price_list_combined; DELETE FROM oro_price_product_combined;`
+- Run command `php bin/console oro:price-lists:schedule-recalculate --all`
+
 ### 5.1.0 RC
 
 Added `.env-app` files support and removed most of the parameters from the config/parameters.yml in favor of environment variables with DSNs. For more details, see [the migration guide](https://doc.oroinc.com/master/backend/setup/dev-environment/env-vars/).
@@ -15,6 +23,11 @@ Added `.env-app` files support and removed most of the parameters from the confi
 * The supported RabbitMQ version is 3.11
 * The supported PHP MongoDB extension version is 1.15
 * The supported MongoDB version is 6.0
+
+Fixed scheduled price lists issue. It is recommended to rebuild CPL's:
+
+- Run sql query `DELETE FROM oro_price_list_combined; DELETE FROM oro_price_product_combined;`
+- Run command `php bin/console oro:price-lists:schedule-recalculate --all`
 
 ## 5.0.0
 
@@ -30,10 +43,14 @@ It is recommended to add these MQ topics to the `oro.index` queue:
 - `oro.email.update_email_visibilities_for_organization`
 - `oro.email.update_email_visibilities_for_organization_chunk`
 
-
 ## 5.0.0-rc
 
-The supported NodeJS version is 16.0
+* The default database driver is `pdo_pgsql`.
+* The supported PostgreSQL version is 13.0
+* The supported NodeJS version is 16.0
+* The supported RabbitMQ version is 3.9
+* The supported PHP MongoDB extension version is 1.11.1
+* The supported MongoDB version is 5.0
 
 ## 5.0.0-alpha.2
 
@@ -44,10 +61,13 @@ The minimum required PHP version is 8.0.0.
 - The link at the calendar events search items was changed,
   please reindex calendar event items with command
   `php bin/console oro:search:reindex --class="Oro\Bundle\CalendarBundle\Entity\CalendarEvent"`
+- Please note that some records in the ImportExportResult table may contain an incorrect value of the organization field. There is not enough data during migration to update these values to the correct ones.
 
 ## 4.2.0
 
-The minimum required PHP version is 7.4.14.
+* The minimum required PHP version is 7.4.14.
+* The minimum supported PostgreSQL version is 12.0
+* The search [algorithm](https://doc.oroinc.com/4.1/backend/bundles/platform/ElasticSearchBundle/configuration/#relevance-optimization) is now enabled by default. To use the search functionality after the upgrade, remove the search index and start full reindexation.
 
 ### Routing
 
@@ -93,6 +113,22 @@ Full product reindexation has to be performed after upgrade!
 ## 1.4.0
 
 Format of sluggable urls cache was changed, added support of localized slugs. Cache regeneration is required after update.
+
+## 1.2.0
+
+* Applied changes in Elasticsearch mappings and settings, cutting down index storage size by over 90% and boosting search reindexation.
+
+  **CAUTION**: You need to drop index before performing upgrade using CLI command, for example:
+
+    ```bash
+        curl -u elastic -XDELETE 'http://localhost:9200/oro_website_search/'
+    ```
+
+  then after upgrade rebuild your website search index manually with command:
+
+    ```bash
+        bin/console oro:website-search:reindex --scheduled
+    ```
 
 ## 1.1.0
 

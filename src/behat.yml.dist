@@ -4,14 +4,15 @@ imports:
 default: &default
     gherkin:
         filters:
-            tags: ~@not-automated&&~@skip
+            tags: ~@not-automated&&~@skip&&~@community-edition-only
     extensions: &default_extensions
         Behat\MinkExtension:
-            base_url: 'http://dev-commerce-crm.local/'
+            base_url: 'http://dev2-commerce-crm-ee.local'
         FriendsOfBehat\SymfonyExtension:
             kernel:
                 debug: false
                 class: AppKernel
+        Oro\Bundle\TestFrameworkBundle\BehatJunitExtension\ServiceContainer\BehatJunitExtension: ~
         Oro\Bundle\TestFrameworkBundle\Behat\ServiceContainer\OroTestFrameworkExtension:
             shared_contexts:
                 - Oro\Bundle\TestFrameworkBundle\Tests\Behat\Context\OroMainContext
@@ -27,7 +28,8 @@ default: &default
                 - Oro\Bundle\ApplicationBundle\Tests\Behat\Context\CommerceMainContext
                 - Oro\Bundle\CustomerBundle\Tests\Behat\Context\CustomerUserContext
                 - Oro\Bundle\OrderBundle\Tests\Behat\Context\OrderContext
-                - Oro\Bundle\ShippingBundle\Tests\Behat\Context\SingleCurrencyContext
+                - Oro\Bundle\SalesBundle\Tests\Behat\Context\SalesContext
+                - Oro\Bundle\ShippingProBundle\Tests\Behat\Context\MultiplyCurrencyContext
                 - Oro\Bundle\ShoppingListBundle\Tests\Behat\Context\ShoppingListContext
                 - Oro\Bundle\RedirectBundle\Tests\Behat\Context\SlugPrototypesContext
 

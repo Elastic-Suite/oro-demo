@@ -2,8 +2,10 @@
 /.buildpath
 /.project
 /.idea
+/packages
 /node_modules
 /composer.phar
+composer.lock
 /behat.yml
 /var/*
 !var/cache/
@@ -12,13 +14,18 @@
 !var/logs/
 /var/logs/*
 !var/logs/.gitkeep
+!var/maintenance/
+/var/maintenance/*
+!var/maintenance/.gitkeep
 !var/data/
 /var/data/*
 !var/data/.gitkeep
+!var/sessions/
+/var/sessions/*
+!var/sessions/.gitkeep
 !var/oro-check.php
 /build/logs/*
 /vendor
-/packages
 /cov
 !public/bundles/
 /public/bundles/*
@@ -50,3 +57,5 @@ bin/*
 /.vagrant
 /.php-version
 /docker-compose.override.yml
+/.build
+/.user.ini

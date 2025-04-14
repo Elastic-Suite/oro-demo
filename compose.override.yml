@@ -10,21 +10,20 @@ services:
   web:
     ports: !reset
       - target: 80
-        mode: host
     networks:
       default:
         aliases:
           - ${ORO_APP_DOMAIN}
     labels:
       - traefik.enable=true
-      - traefik.http.services.oro5-web.loadbalancer.server.port=80
+      - traefik.http.services.oro60-web.loadbalancer.server.port=80
       # Serve oro over http
-      - traefik.http.routers.oro5-web-http.rule=Host(`${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro5-web-http.entrypoints=http
+      - traefik.http.routers.oro60-web-http.rule=Host(`${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro60-web-http.entrypoints=http
       # Serve oro over https
-      - traefik.http.routers.oro5-web-https.rule=Host(`${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro5-web-https.entrypoints=https
-      - traefik.http.routers.oro5-web-https.tls=true
+      - traefik.http.routers.oro60-web-https.rule=Host(`${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro60-web-https.entrypoints=https
+      - traefik.http.routers.oro60-web-https.tls=true
 
   php-fpm-app:
     build:
@@ -34,7 +33,6 @@ services:
       args:
         UID: ${UID}
         GID: ${GID}
-    env_file: .env
     environment:
       ORO_SEARCH_ENGINE_DSN: elastic-search://elastic:9200?prefix=oro_search
       ORO_WEBSITE_SEARCH_ENGINE_DSN: elastic-search://elastic:9200?prefix=oro_website_search
@@ -54,19 +52,15 @@ services:
     depends_on:
       <<: *default-depends_on
 
-  restore: &restore
-    depends_on:
-      <<: *default-depends_on
-
   db:
     ports:
       - 5433:5432
     labels:
       - traefik.enable=true
-      - traefik.http.services.oro5-db.loadbalancer.server.port=5432
+      - traefik.http.services.oro60-db.loadbalancer.server.port=5432
       # Serve oro over http
-      - traefik.http.routers.oro5-db-http.rule=Host(`database.${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro5-db-http.entrypoints=http
+      - traefik.http.routers.oro60-db-http.rule=Host(`database.${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro60-db-http.entrypoints=http
 
   elastic:
     image: elasticsearch:8.15.2
@@ -87,10 +81,10 @@ services:
       retries: 20
     labels:
       - traefik.enable=true
-      - traefik.http.services.oro5-elasticsearch.loadbalancer.server.port=9200
+      - traefik.http.services.oro60-elasticsearch.loadbalancer.server.port=9200
       # Serve oro over http
-      - traefik.http.routers.oro5-elasticsearch-http.rule=Host(`elastic.${ORO_APP_DOMAIN}`)
-      - traefik.http.routers.oro5-elasticsearch-http.entrypoints=http
+      - traefik.http.routers.oro60-elasticsearch-http.rule=Host(`elastic.${ORO_APP_DOMAIN}`)
+      - traefik.http.routers.oro60-elasticsearch-http.entrypoints=http
 
 volumes:
   es_data8: {}

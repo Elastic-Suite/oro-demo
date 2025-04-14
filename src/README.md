@@ -1,5 +1,25 @@
-OroCommerce Sample Application
-==============================
+OroCommerce Enterprise Application
+==================================
+
+What Is Included?
+--------------------
+
+This sample application includes OroCommerce Enterprise Edition.
+
+Other application distributions:
+  * orocommerce-enterprise-nocrm-application - OroCommerce Enterprise Edition, without CRM modules
+  * orocommerce-platform-application - OroCommerce Enterprise Edition, with additional marketplace modules
+  * orocommerce-application - OroCommerce Community Edition
+
+
+  * orocommerce-application-de - German-localized version of OroCommerce Community Edition
+  * orocommerce-enterprise-application-de - German-localized version of OroCommerce Enterprise Edition
+
+
+  * platform-application - OroPlatform Community Edition, without eCommerce/CRM/marketplace modules
+  * crm-application - OroCRM Community Edition, without eCommerce/marketplace modules
+  * crm-enterprise-application - OroCRM Enterprise Edition, without eCommerce/marketplace modules
+  * oromarketplace-application - legacy version (4.2 compatible) of OroCommerce Enterprise Edition with additional marketplace modules
 
 What is OroCommerce?
 --------------------
@@ -15,12 +35,12 @@ Please see the OroCommerce online documentation for the complete list of [system
 Installation
 ------------
 
-Please see the [OroCommerce and OroCRM Community Edition Installation Guide](https://doc.oroinc.com/backend/setup/dev-environment/manual-installation/commerce-ce/) for the detailed installation steps.
+Please see the [OroCommerce and OroCRM Enterprise Edition Installation Guide](https://doc.oroinc.com/backend/setup/dev-environment/manual-installation/commerce-ee/) for the detailed installation steps.
 
 Resources
 ---------
 
-  * [OroCommerce Documentation](https://doc.oroinc.com)
+  * [OroCommerce, OroCRM and OroPlatform Documentation](https://doc.oroinc.com)
   * [Contributing](https://doc.oroinc.com/community/contribute/)
 
 License

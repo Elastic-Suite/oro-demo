@@ -6,7 +6,7 @@ imports:
 parameters:
     # Some parameter values are not set from environment variables because Symfony service container build
     # depends on them. These parameter values cannot be changed in runtime without the application cache rebuild.
-    web_backend_prefix: '/admin'
+
     database_server_version: '13.7'
     secret: '%env(ORO_SECRET)%'
     database_dsn: '%env(ORO_DB_DSN)%'
@@ -17,6 +17,9 @@ parameters:
     search_engine_dsn: '%env(ORO_SEARCH_ENGINE_DSN)%'
     website_search_engine_dsn: '%env(ORO_WEBSITE_SEARCH_ENGINE_DSN)%'
     session_handler_dsn: '%env(ORO_SESSION_DSN)%'
+    enterprise_licence: '%env(ORO_ENTERPRISE_LICENCE)%'
+    multi_host_enabled: '%env(bool:ORO_MULTIHOST_ENABLED)%'
+    multi_host_operation_directory: '%env(resolve:ORO_MULTIHOST_OPERATION_FOLDER)%'
     message_queue_transport_dsn: '%env(ORO_MQ_DSN)%'
     liip_imagine.jpegoptim.binary: '%env(ORO_JPEGOPTIM_BINARY)%'
     liip_imagine.pngquant.binary: '%env(ORO_PNGQUANT_BINARY)%'
@@ -27,7 +30,10 @@ parameters:
     log_path: '%env(resolve:ORO_LOG_PATH)%'
 
     env(ORO_SECRET): ThisTokenIsNotSoSecretChangeIt
-    env(ORO_DB_URL): 'postgresql://root@127.0.0.1/b2b_crm_dev'
+    env(ORO_ENTERPRISE_LICENCE): ''
+    env(ORO_MULTIHOST_ENABLED): false
+    env(ORO_MULTIHOST_OPERATION_FOLDER): '%kernel.project_dir%/var/multihost'
+    env(ORO_DB_URL): 'postgresql://root@127.0.0.1/b2b_crm_ee_dev'
     env(ORO_DB_DSN): '%env(ORO_DB_URL)%'
     env(ORO_MAILER_DSN): 'native://default'
     env(ORO_SEARCH_URL): 'orm:'
@@ -40,6 +46,9 @@ parameters:
     env(ORO_MQ_DSN): 'dbal:'
     env(ORO_JPEGOPTIM_BINARY): ''
     env(ORO_PNGQUANT_BINARY): ''
+    env(ORO_MONGODB_SERVER): 'mongodb://127.0.0.1:27017'
+    env(ORO_MONGODB_DSN_PUBLIC): '%env(ORO_MONGODB_SERVER)%/media'
+    env(ORO_MONGODB_DSN_PRIVATE): '%env(ORO_MONGODB_SERVER)%/private'
     env(ORO_REDIS_URL): 'redis://127.0.0.1:6379'
     env(ORO_REDIS_SESSION_DSN): '%env(ORO_REDIS_URL)%/0'
     env(ORO_REDIS_CACHE_DSN): '%env(ORO_REDIS_URL)%/1'
@@ -51,15 +60,12 @@ parameters:
     env(ORO_OAUTH_PRIVATE_KEY_PATH): '%kernel.project_dir%/var/oauth_private.key'
     env(ORO_LOG_PATH): "%kernel.logs_dir%/%kernel.environment%.log"
 
-    enterprise_licence: ~
-
 framework:
     #esi:             ~
     translator:
         paths:
             - '%kernel.project_dir%/translations'
         fallback: en
-        cache_dir: '%kernel.cache_dir%/translations'
     secret:          "%secret%"
     router:
         resource: "%kernel.project_dir%/config/routing.yml"
@@ -77,9 +83,9 @@ framework:
         name:                 BAPID
         handler_id:           '%session_handler%'
         save_path:            '%kernel.project_dir%/var/sessions/%kernel.environment%'
-        gc_maxlifetime:       3600
-        cookie_httponly:      true
+        gc_maxlifetime:       7200 #120 minutes
         cookie_secure:        'auto'
+        cookie_httponly:      true
     fragments:
         enabled:              true
         path:                 /_fragment # used for controller action in template
@@ -94,15 +100,16 @@ framework:
 twig:
     debug:                    "%kernel.debug%"
     strict_variables:         "%kernel.debug%"
+    exception_controller:     null # use framework.error_controller instead
     globals:
         bap:
             layout:           base.html.twig  # default layout across all Oro bundles
 
 fos_js_routing:
-    routes_to_expose: ['oro_.*']
+    routes_to_expose: ['oro_.*', 'oropro_.*']
 
 oro_frontend:
-    routes_to_expose: ['oro_.*']
+    routes_to_expose: ['oro_.*', 'oropro_.*']
 
 stof_doctrine_extensions:
     default_locale: en
@@ -122,7 +129,7 @@ oro_maintenance:
 #        ips:                  ["127.0.0.1"]                   # Optional. Authorized ip addresses
     driver:
         options:
-            file_path:        '%kernel.project_dir%/var/cache/maintenance_lock'
+            file_path:        '%maintenance_lock_file_path%'
 
 #
 # ORO Bundles config
@@ -133,7 +140,6 @@ oro_theme:
 oro_layout:
     enabled_themes:
         - default
-        - custom
 
 oro_locale:
     formatting_code: en
@@ -141,8 +147,14 @@ oro_locale:
 
 oro_attachment:
     upload_file_mime_types:
+        - text/csv
+        - text/plain
         - application/msword
+        - application/vnd.openxmlformats-officedocument.wordprocessingml.document
         - application/vnd.ms-excel
+        - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        - application/vnd.ms-powerpoint
+        - application/vnd.openxmlformats-officedocument.presentationml.presentation
         - application/pdf
         - application/zip
         - image/gif

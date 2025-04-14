@@ -1,12 +1,7 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Maintenance mode rewrites #
-    RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
-    RewriteCond %{DOCUMENT_ROOT}/../var/cache/maintenance_lock -f
-    RewriteCond %{SCRIPT_FILENAME} !maintenance.html
-    RewriteRule ^.*$ /maintenance.html [R=503,L]
-    ErrorDocument 503 /maintenance.html
+    #RewriteBase /
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ index.php [QSA,L]

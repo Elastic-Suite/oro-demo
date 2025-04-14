@@ -8,10 +8,10 @@ security:
                 realm: "Secured REST Area"
             provider: oro_user
             http-basic: false
+            entry_point: organization_http_basic
             organization-form-login: false
             logout: false
             organization-remember-me: false
-            anonymous: true
 
         frontend:
             pattern: ^/

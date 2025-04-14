@@ -119,13 +119,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: oro_dev
+      target: oro_cron
       args:
         UID: ${UID}
         GID: ${GID}
     command: cron
     env_file: .env
-    user: ${ORO_USER_RUNTIME:-www-data}
     ulimits:
       nofile:
         soft: 1024
@@ -148,19 +147,6 @@ services:
         UID: ${UID}
         GID: ${GID}
     command: console oro:install --no-interaction --timeout=3600 --user-name="$ORO_USER_NAME" --user-email="$ORO_USER_EMAIL" --user-firstname="$ORO_USER_FIRSTNAME" --user-lastname="$ORO_USER_LASTNAME" --user-password="$ORO_USER_PASSWORD" --sample-data="$ORO_SAMPLE_DATA" --organization-name="$ORO_ORGANIZATION_NAME" --language=$ORO_LANGUAGE --formatting-code=$ORO_FORMATTING_CODE --application-url="$ORO_APP_PROTOCOL://$ORO_APP_DOMAIN" $ORO_INSTALL_OPTIONS
-    user: $ORO_USER_RUNTIME
-    env_file: .env
-    depends_on:
-      <<: *default-depends_on
-    volumes:
-      - ./src:/var/www/oro
-      - var_install:/var/www/oro/var
-      - public_storage:/var/www/oro/public/media
-      - private_storage:/var/www/oro/var/data
-
-  restore: &restore
-    image: ${ORO_IMAGE_INIT}${ORO_LANGUAGE_SUFFIX-}:$ORO_IMAGE_TAG
-    command: restore
     user: $ORO_USER_RUNTIME
     env_file: .env
     depends_on:
