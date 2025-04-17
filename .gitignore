@@ -1,3 +1,6 @@
 
 src/auth.json
 src/.php-cs-fixer.cache
+
+**/vendor
+**/node_modules
