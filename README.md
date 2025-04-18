@@ -54,6 +54,13 @@
   docker compose exec php-fpm-app bin/console oro:assets:build --watch
   ``` 
 
+## Prod mode
+
+In prod mode you can generate certificates in a ./certs dir with 
+```shell
+openssl req -x509 -nodes -newkey rsa:2048 -keyout certs/key.pem -out certs/cert.pem -sha256 -days 365     -subj "/C=GB/ST=London/L=London/O=Alros/OU=IT Department/CN=localhost"
+```
+
 ## How this env was build
 
 ```shell

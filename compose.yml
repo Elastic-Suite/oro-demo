@@ -23,13 +23,22 @@ services:
       "cron":
         condition: service_started
 
+  ssl:
+    image: nginx:latest
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ./certs:/root/ssl/
+      - ./docker/nginx/conf/:/etc/nginx/conf.d/:ro
+
+
   web:
     image: $ORO_IMAGE:$ORO_IMAGE_TAG
     command: nginx
     env_file: .env
     ports:
       - target: 80
-        published: 80
         mode: host
     depends_on:
       "php-fpm-app":
