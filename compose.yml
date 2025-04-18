@@ -42,6 +42,11 @@ services:
     ports:
       - target: 80
         mode: host
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     depends_on:
       "php-fpm-app":
         condition: service_healthy
