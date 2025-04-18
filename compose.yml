@@ -31,7 +31,9 @@ services:
     volumes:
       - ./certs:/root/ssl/
       - ./docker/nginx/conf/:/etc/nginx/conf.d/:ro
-
+    depends_on:
+      "web":
+        condition: service_healthy
 
   web:
     image: $ORO_IMAGE:$ORO_IMAGE_TAG
