@@ -46,7 +46,7 @@ services:
       test: [ "CMD", "curl", "-f", "http://localhost" ]
       interval: 30s
       timeout: 5s
-      retries: 3
+      retries: 10
     depends_on:
       "php-fpm-app":
         condition: service_healthy

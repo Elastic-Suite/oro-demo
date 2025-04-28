@@ -95,6 +95,12 @@ framework:
         transports:
             main: 'oro://system-config?fallback=%mailer_dsn%'
             oro_user_email_origin: 'oro://user-email-origin'
+    trusted_proxies: '127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'
+    trusted_headers:
+        - "x-forwarded-for"
+        - "x-forwarded-proto"
+        - "x-forwarded-port"
+        - "x-forwarded-host"
 
 # Twig Configuration
 twig:
