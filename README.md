@@ -19,9 +19,8 @@
 
 * Install composer dependencies
     ```shell
-    docker compose run --rm install composer install
     docker compose run --rm install composer config github-oauth.github.com [Your Token]
-    docker compose run --rm install composer require oro/platform-enterprise:6.0.2 oro/crm-enterprise:6.0.2 oro/commerce-enterprise:6.0.2 
+    docker compose run --rm install composer install
     ```
 
 * Add gally plugin
