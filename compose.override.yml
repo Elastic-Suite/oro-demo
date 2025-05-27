@@ -37,8 +37,6 @@ services:
         UID: ${UID}
         GID: ${GID}
     environment:
-      ORO_SEARCH_ENGINE_DSN: elastic-search://elastic:9200?prefix=oro_search
-      ORO_WEBSITE_SEARCH_ENGINE_DSN: elastic-search://elastic:9200?prefix=oro_website_search
       PHP_IDE_CONFIG: "serverName=${ORO_APP_DOMAIN}"
       XDEBUG_MODE: debug
       XDEBUG_CONFIG: "client_host=host.docker.internal client_port=9003"
