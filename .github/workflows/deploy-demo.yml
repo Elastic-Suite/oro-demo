@@ -21,6 +21,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.AWS_DEPLOY_KEY }}
           HOSTNAME : ${{ secrets.AWS_HOSTNAME }}
           USER_NAME : ${{ secrets.AWS_USER }}
+          GALLY_DSN : ${{ secrets.GALLY_DSN }}
           RESET_DB : ${{ inputs.reset_database }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
@@ -44,6 +45,6 @@ jobs:
             docker compose -f compose.yml run --rm install composer require gally/oro-plugin:2.0.0
             echo 'Reset db value: ${RESET_DB}' &&
             [ -z ${RESET_DB} ] || docker compose -f compose.yml down -v &&
-            [ -z ${RESET_DB} ] || ORO_APP_DOMAIN=$HOSTNAME  docker compose -f compose.yml up install &&
-            ORO_APP_DOMAIN=$HOSTNAME docker compose -f compose.yml up -d
+            [ -z ${RESET_DB} ] || GALLY_DSN=$GALLY_DSN ORO_APP_DOMAIN=$HOSTNAME  docker compose -f compose.yml up install &&
+            GALLY_DSN=$GALLY_DSN ORO_APP_DOMAIN=$HOSTNAME docker compose -f compose.yml up -d
           "

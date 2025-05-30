@@ -10,12 +10,13 @@
 
 * Edit .env file and update the value of :
 
-| Var                 | Description                           | Example value           |
-|---------------------|---------------------------------------|-------------------------|
-| `UID`               | Your user id                          | 1000                    |
-| `GID`               | Your group id                         | 1000                    |
-| `ORO_APP_DOMAIN`    | The oro domain you want to use        | oro.connector.localhost |
-| `GALLY_SERVER_NAME` | The server name you defined for gally | gally.connector.local   |
+| Var                 | Description                           | Example value                                                                        |
+|---------------------|---------------------------------------|--------------------------------------------------------------------------------------|
+| `UID`               | Your user id                          | 1000                                                                                 |
+| `GID`               | Your group id                         | 1000                                                                                 |
+| `ORO_APP_DOMAIN`    | The oro domain you want to use        | oro.connector.localhost                                                              |
+| `GALLY_SERVER_NAME` | The server name you defined for gally | gally.connector.local                                                                |
+| `GALLY_DSN`         | The gally DSN                         | gally://admin\@example.com:apassword@gally.connector.local:443?path=api&check_ssl=0  |
 
 * Install composer dependencies
     ```shell
