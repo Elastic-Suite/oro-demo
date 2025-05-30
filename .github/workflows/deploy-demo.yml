@@ -40,11 +40,11 @@ jobs:
             git fetch --all && git reset --hard && git checkout ${{ env.BRANCH }} &&
             cd /home/ubuntu/oro &&
             docker compose -f compose.yml build && 
-            docker compose -f compose.yml run --rm install composer install --no-dev && 
             docker compose -f compose.yml run --rm install composer config repositories.gally-connector '{ \"type\": \"path\", \"url\": \"./packages/GallyPlugin\", \"options\": { \"versions\": { \"gally/oro-plugin\": \"2.0.0\"}} }' &&
-            docker compose -f compose.yml run --rm install composer require gally/oro-plugin:2.0.0
+            docker compose -f compose.yml run --rm install composer require --no-install --no-scripts gally/oro-plugin:2.0.0 && 
+            docker compose -f compose.yml run --rm install composer install --no-dev && 
             echo 'Reset db value: ${RESET_DB}' &&
-            [ -z ${RESET_DB} ] || docker compose -f compose.yml down -v &&
-            [ -z ${RESET_DB} ] || GALLY_DSN=$GALLY_DSN ORO_APP_DOMAIN=$HOSTNAME  docker compose -f compose.yml up install &&
+            ([ -z ${RESET_DB} ] || docker compose -f compose.yml down -v) &&
+            ([ -z ${RESET_DB} ] || GALLY_DSN=$GALLY_DSN ORO_APP_DOMAIN=$HOSTNAME docker compose -f compose.yml up install) &&
             GALLY_DSN=$GALLY_DSN ORO_APP_DOMAIN=$HOSTNAME docker compose -f compose.yml up -d
           "
