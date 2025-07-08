@@ -24,8 +24,10 @@ jobs:
           GALLY_DSN : ${{ secrets.GALLY_DSN }}
           RESET_DB : ${{ inputs.reset_database }}
         run: |
+          set -e
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -i private_key ${USER_NAME}@${HOSTNAME} "
+            set -e
             cd /home/ubuntu/ &&
             ([ -d oro ] || git clone https://github.com/Elastic-Suite/oro-demo.git oro) &&
             cd /home/ubuntu/oro &&
@@ -46,5 +48,6 @@ jobs:
             echo 'Reset db value: ${RESET_DB}' &&
             ([ -z ${RESET_DB} ] || docker compose -f compose.yml down -v) &&
             ([ -z ${RESET_DB} ] || ORO_WEBSITE_SEARCH_ENGINE_DSN=$GALLY_DSN ORO_APP_DOMAIN=$HOSTNAME docker compose -f compose.yml up install) &&
+            echo install exit code: $? && 
             ORO_WEBSITE_SEARCH_ENGINE_DSN=$GALLY_DSN ORO_APP_DOMAIN=$HOSTNAME docker compose -f compose.yml up -d
           "
