@@ -43,7 +43,7 @@ jobs:
             docker compose -f compose.yml build &&
             docker compose -f compose.yml run --rm install composer config repositories.gally-connector '{ "type": "path", "url": "./packages/GallyPlugin", "options": { "versions": { "gally/oro-plugin": "2.0.0"}} }' &&
             docker compose -f compose.yml run --rm install composer config process-timeout 900 &&
-            docker compose -f compose.yml run --rm install composer require --no-install --no-scripts gally/oro-plugin:2.0.0 &&
+            docker compose -f compose.yml run --rm install composer require --no-install --no-scripts --with-all-dependencies gally/oro-plugin:2.0.0 &&
             docker compose -f compose.yml run --rm install composer install && 
             echo "ORO_APP_DOMAIN=${HOSTNAME}" >> .env &&
             echo "ORO_WEBSITE_SEARCH_ENGINE_DSN=${GALLY_DSN}" >> .env &&
