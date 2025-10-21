@@ -2752,17 +2752,17 @@
             "time": "2023-01-06T15:33:47+00:00"
         },
         {
-            "name": "gally/gally-php-rest-sdk",
-            "version": "dev-feat-new-sdk",
+            "name": "gally/gally-php-sdk",
+            "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Elastic-Suite/gally-php-rest-sdk.git",
-                "reference": "5bb2bb4ddc22142f47f0e0b7fe03f4160118a172"
+                "url": "https://github.com/Elastic-Suite/gally-php-sdk.git",
+                "reference": "d6cd3037c9c0979303bf9026e3d8051b7150f85f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Elastic-Suite/gally-php-rest-sdk/zipball/5bb2bb4ddc22142f47f0e0b7fe03f4160118a172",
-                "reference": "5bb2bb4ddc22142f47f0e0b7fe03f4160118a172",
+                "url": "https://api.github.com/repos/Elastic-Suite/gally-php-sdk/zipball/d6cd3037c9c0979303bf9026e3d8051b7150f85f",
+                "reference": "d6cd3037c9c0979303bf9026e3d8051b7150f85f",
                 "shasum": ""
             },
             "require": {
@@ -2786,8 +2786,8 @@
             "description": "PHP Sdk for Gally connectors",
             "homepage": "https://meetgally.com",
             "support": {
-                "issues": "https://github.com/Elastic-Suite/gally-php-rest-sdk/issues",
-                "source": "https://github.com/Elastic-Suite/gally-php-rest-sdk/tree/feat-new-sdk"
+                "issues": "https://github.com/Elastic-Suite/gally-php-sdk/issues",
+                "source": "https://github.com/Elastic-Suite/gally-php-sdk/tree/feat-new-sdk"
             },
             "time": "2025-03-28T15:36:58+00:00"
         },
@@ -2800,7 +2800,7 @@
                 "reference": "f9365d9fa643b0c6b34f000e991c50af2f551add"
             },
             "require": {
-                "gally/gally-php-rest-sdk": "dev-feat-new-sdk",
+                "gally/gally-php-sdk": "dev-main",
                 "oro/commerce": "^6.0",
                 "php": "^8.2.0"
             },
