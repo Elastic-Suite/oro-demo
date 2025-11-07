@@ -4,3 +4,7 @@ src/.php-cs-fixer.cache
 
 **/vendor
 **/node_modules
+src/var/*
+src/public/bundles
+
+certs/**
