@@ -98,7 +98,7 @@ services:
       args:
         UID: ${UID}
         GID: ${GID}
-    command: console gos:websocket:server -v
+    command: websocket
     env_file: .env
     environment:
       ORO_WEBSITE_SEARCH_ENGINE_DSN: ${ORO_WEBSITE_SEARCH_ENGINE_DSN}
@@ -122,7 +122,7 @@ services:
       args:
         UID: ${UID}
         GID: ${GID}
-    command: console oro:message-queue:consume --memory-limit=500 -v
+    command: consumer
     env_file: .env
     environment:
       ORO_WEBSITE_SEARCH_ENGINE_DSN: ${ORO_WEBSITE_SEARCH_ENGINE_DSN}

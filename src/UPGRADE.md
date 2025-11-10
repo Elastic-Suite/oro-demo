@@ -4,6 +4,18 @@ This file includes only the most important items that should be addressed before
 
 Please also refer to [CHANGELOG.md](CHANGELOG.md) for a list of significant changes in the code that may affect the upgrade of some customizations.
 
+### UNRELEASED (6.0.4)
+
+In addition to the existing YAML-based checkout workflows, a service-based implementation has been added. To switch to the new implementation, set the DI parameter `oro_checkout.use_transition_services` to `true` and reload the workflow definitions with the command `oro:workflow:definitions:load`. YAML-based checkouts are still fully functional and can be used. The service-based implementation should be preferred to simplify checkout customizations and maintainability.
+
+### 5.1.10, 6.0.4
+
+Fixed issue in Merge by Priority strategy optimization when pre-calculated CPL was used.
+It is recommended to rebuild CPL's if Merge by Priority strategy is used:
+
+- Run sql query `DELETE FROM oro_price_list_combined;`
+- Run command `php bin/console oro:price-lists:schedule-recalculate --all`
+
 ### 5.1.3
 
 Fixed issue in Merge by Priority strategy optimization when pre-calculated CPL was used. 

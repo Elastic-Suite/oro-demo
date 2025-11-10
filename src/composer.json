@@ -1,11 +1,11 @@
 {
   "name": "oro/commerce-crm-enterprise-application",
   "description": "OroCommerce + OroCrm Enterprise Application.",
-  "license": "Commercial",
+  "license": "proprietary",
   "authors": [
     {
       "name": "Oro, Inc",
-      "homepage": "https://www.orocommerce.com"
+      "homepage": "https://oroinc.com/"
     }
   ],
   "autoload": {
@@ -23,7 +23,7 @@
       "url": "./packages/GallyPlugin",
       "options": {
         "versions": {
-          "gally/oro-plugin": "2.0.0"
+          "gally/oro-plugin": "2.2.0"
         }
       }
     },
@@ -49,7 +49,7 @@
     },
     "composer": {
       "type": "composer",
-      "url": "https://packagist.orocrm.com"
+      "url": "https://packagist.oroinc.com"
     }
   },
   "require": {
@@ -69,7 +69,8 @@
     "oro/cookie-consent": "6.0.*",
     "oro/gridfs-config": "6.0.*",
     "oro/microsoft-sync": "6.0.*",
-    "gally/oro-plugin": "2.0.0"
+    "oro/gen-ai": "6.0.*",
+    "gally/oro-plugin": "2.2.0"
   },
   "require-dev": {
     "behat/behat": "~3.12.0",
