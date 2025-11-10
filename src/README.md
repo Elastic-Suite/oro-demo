@@ -45,5 +45,5 @@ Resources
 
 License
 -------
- 
-[OSL-3.0](LICENSE) Copyright (c) 2024 Oro Inc.
+
+[Proprietary](LICENSE) Copyright (c) 2024 Oro Inc.

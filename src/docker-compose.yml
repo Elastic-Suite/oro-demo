@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   pgsql:
-    image: oroinc/pgsql:13.7-1-alpine
+    image: oroinc/pgsql:17.4-alpine
     ports: ['5432']
     labels:
       com.symfony.server.service-prefix: ORO_DB
@@ -19,7 +19,7 @@ services:
       start_period: 40s
     restart: on-failure
   rabbitmq:
-    image: oroinc/rabbitmq:3.9-1-alpine
+    image: oroinc/rabbitmq:3.13.7-alpine
     ports: ['5672']
     labels:
       com.symfony.server.service-prefix: ORO_MQ
@@ -28,7 +28,7 @@ services:
       RABBITMQ_DEFAULT_PASS: oro_mq_pass
     restart: on-failure
   elasticsearch:
-    image: elasticsearch:8.4.1
+    image: elasticsearch:8.17.4
     command: bin/elasticsearch -Eingest.geoip.downloader.enabled=false
     environment:
       discovery.type: "single-node"
@@ -47,7 +47,7 @@ services:
       com.symfony.server.service-prefix: ORO_SEARCH
     restart: on-failure
   redis:
-    image: redis:6-alpine
+    image: redis:7.4.2-alpine
     ports: ["6379"]
     labels:
       com.symfony.server.service-prefix: ORO_REDIS
@@ -57,12 +57,18 @@ services:
     labels:
       com.symfony.server.service-prefix: ORO_MAILER
   mongodb:
-    image: mongo:5.0
+    image: mongo:8.0.4
     ports: ["27017"]
     labels:
       com.symfony.server.service-prefix: ORO_MONGODB
     volumes:
       - mongodb:/data/db
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    ports: ["3000"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
+    restart: on-failure
 volumes:
   postgres: {}
   elasticsearch: {}

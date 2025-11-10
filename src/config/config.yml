@@ -18,6 +18,7 @@ parameters:
     website_search_engine_dsn: '%env(ORO_WEBSITE_SEARCH_ENGINE_DSN)%'
     session_handler_dsn: '%env(ORO_SESSION_DSN)%'
     enterprise_licence: '%env(ORO_ENTERPRISE_LICENCE)%'
+    enterprise_licence_start: '%env(ORO_ENTERPRISE_LICENCE_START)%'
     multi_host_enabled: '%env(bool:ORO_MULTIHOST_ENABLED)%'
     multi_host_operation_directory: '%env(resolve:ORO_MULTIHOST_OPERATION_FOLDER)%'
     message_queue_transport_dsn: '%env(ORO_MQ_DSN)%'
@@ -32,6 +33,7 @@ parameters:
 
     env(ORO_SECRET): ThisTokenIsNotSoSecretChangeIt
     env(ORO_ENTERPRISE_LICENCE): ''
+    env(ORO_ENTERPRISE_LICENCE_START): ''
     env(ORO_MULTIHOST_ENABLED): false
     env(ORO_MULTIHOST_OPERATION_FOLDER): '%kernel.project_dir%/var/multihost'
     env(ORO_DB_URL): 'postgresql://root@127.0.0.1/b2b_crm_ee_dev'

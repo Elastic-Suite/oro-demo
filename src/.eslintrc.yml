@@ -66,8 +66,8 @@ rules:
   'no-jquery/no-trim': 'error'
   'no-jquery/no-sizzle':
     - 'error'
-    -   allowPositional: false
-        allowOther: true
+    - allowPositional: false
+      allowOther: true
   'no-jquery/no-camel-case': 'error'
   'no-jquery/no-is-function': 'error'
   'no-jquery/no-is-numeric': 'error'

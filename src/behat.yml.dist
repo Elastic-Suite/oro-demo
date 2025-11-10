@@ -32,6 +32,183 @@ default: &default
                 - Oro\Bundle\ShippingProBundle\Tests\Behat\Context\MultiplyCurrencyContext
                 - Oro\Bundle\ShoppingListBundle\Tests\Behat\Context\ShoppingListContext
                 - Oro\Bundle\RedirectBundle\Tests\Behat\Context\SlugPrototypesContext
+            feature_topics:
+                #Commerce Storefront
+                Register and Log In Customer User:
+                    - Log In
+                    - Sign Up
+                    - Forgot your password
+                My Account:
+                    - I click "Account Dropdown"
+                ReOrders:
+                    - I click "Re-Order"
+                Quotes:
+                    - Quote
+                Quick Order Form:
+                    - I click "Quick Order"
+                Checkout:
+                    - I click "Create Order"
+                Single Page Checkout:
+                    - "Single Page Checkout"
+                Guest Checkout:
+                    - Enable Guest Checkout
+                Cookie Consent Banner:
+                    - Cookie Banner
 
+                #Commerce Back-office
+                Application Authentication:
+                    - I am on Login page
+                User Menu:
+                    - I click (.*) in user menu
+                Navigation:
+                    - pin page
+                    - add page to favorites
+                Dashboard:
+                    - I go to Dashboards
+                    - I click "Add widget"
+                Accounts:
+                    - Customers\/ Accounts
+                    - Customers\/Accounts
+                Contacts:
+                    - Customers\/ Contacts
+                    - Customers\/Contacts
+                Customers:
+                    - Customers\/ Customers
+                    - Customers\/Customers
+                Customer Users:
+                    - Customers\/ Customer Users
+                    - Customers\/Customer Users
+                Customer User Roles:
+                    - Customers\/ Customer User Roles
+                    - Customers\/Customer User Roles
+                Business Customers:
+                    - Customers\/ Business Customers
+                    - Customers\/Business Customers
+                Customer User Oauth Applications:
+                    - Customers\/ Customer User OAuth Applications
+                    - Customers\/Customer User OAuth Applications
+                Leads:
+                    - Sales\/ Leads
+                    - Sales\/Leads
+                Opportunities:
+                    - Sales\/ Opportunities
+                    - Sales\/Opportunities
+                Shopping Lists:
+                    - Shopping List
+                    - Sales\/ Shopping Lists
+                    - Sales\/Shopping Lists
+                RFQs:
+                    - RFQ
+                    - Sales\/ Requests For Quote
+                    - Sales\/Requests For Quote
+                Orders:
+                    - Sales\/ Orders
+                    - Sales\/Orders
+                Price Lists:
+                    - Price Calculation
+                    - Sales\/ Price Lists
+                    - Sales\/Price Lists
+                Price Attributes:
+                    - Products\/ Price Attributes
+                    - Sales\/Price Attributes
+                Marketplaces:
+                    - Marketplace
+                    - Seller
+                Product Management:
+                    - Products
+                    - Products\/ Products
+                    - Products\/Products
+                Product Families:
+                    - Products\/ Product Families
+                    - Products\/Product Families
+                Product Attributes:
+                    - Products\/ Price Attributes
+                Product Brands:
+                    - Products\/ Product Brands
+                    - Products\/Product Brands
+                Master Catalog:
+                    - Products\/ Master Catalog
+                    - Products\/Master Catalog
+                Web Catalog:
+                    - Marketing\/ Web Catalogs
+                    - Marketing\/Web Catalogs
+                Marketing Lists:
+                    - Marketing\/ Marketing Lists
+                    - Marketing\/Marketing Lists
+                Email Campaigns:
+                    - Campaigns
+                    - Marketing\/ Email Campaigns
+                    - Marketing\/Email Campaigns
+                Promotions:
+                    - Promotions
+                    - Coupons
+                Content Management:
+                    - Landing Pages
+                    - Content Templates
+                    - Content Blocks
+                Digital Assets:
+                    - Digital Assets
+                    - Media
+                Search:
+                    - Search
+                Search Management:
+                    - Commerce\/Search
+                    - Commerce\/Product\/Product Search
+                Taxes management:
+                    - Taxes
+                    - tax
+                Inventory Management:
+                    - Commerce\/Inventory
+                    - Inventory\/Warehouse
+                Activities Management:
+                    - Activities|Activity
+                Reports and Segments:
+                    - Reports
+                    - Segments
+                User Management:
+                    - System\/User Management
+                Integration Management:
+                    - System\/ Integrations
+                    - System\/Integrations
+                Channel Management:
+                    - System\/ Channels
+                    - System\/Channels
+                Data Audit:
+                    - System\/ Data Audit
+                    - System\/Data Audit
+                Entity Management:
+                    - System\/ Entities
+                    - System\/Entities
+                Menu Management:
+                    - System\/Menus
+                    - System\/ Frontend Menus
+                    - System\/Frontend Menus
+                Shipping Rules:
+                    - System\/ Shipping Rules
+                    - System\/Shipping Rules
+                Payment Rules:
+                    - System\/ Payment Rules
+                    - System\/Payment Rules
+                Workflow Management:
+                    - System\/ Workflows
+                    - System\/Workflows
+                Consents Management:
+                    - Consents
+                Website Management:
+                    - System\/ Websites
+                    - System\/Websites
+                Localization Management:
+                    - System\/ Localization
+                    - System\/Localization
+                GTM:
+                    - GTM data layer must contain the following message
+                WYSIWYG:
+                    - WYSIWYG
+                Import:
+                    - Import
+                Export:
+                    - Export
+        Oro\Bundle\MultiHostBundle\Behat\ServiceContainer\OroMultiHostBehatExtension: ~
+        Oro\Bundle\AmqpMessageQueueBundle\Behat\ServiceContainer\OroAmqpMessageQueueBehatExtension: ~
 chromedriver:
     <<: *default

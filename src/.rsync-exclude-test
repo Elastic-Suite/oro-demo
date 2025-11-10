@@ -3,7 +3,7 @@
 - */.github
 - */.gitignore
 - .build
-- /node_modules
+# - /node_modules
 - vendor/oro/platform/build/node_modules
 - /public/media/**
 - /var/data/**

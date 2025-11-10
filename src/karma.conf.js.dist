@@ -72,6 +72,8 @@ module.exports = function(config) {
     basePath: '',
     baseUrl: '/',
 
+    hostname: process.env.KARMA_HOSTNAME || 'localhost',
+
     frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
@@ -93,14 +95,14 @@ module.exports = function(config) {
 
     junitReporter: {
       // will be resolved to basePath (in the same way as files/exclude patterns)
-      outputDir: 'build/logs',
+      outputDir: 'var/logs',
       outputFile: 'karma.xml',
       useBrowserName: false
     },
 
     /* coverageReporter: {
       type: 'html',
-      dir:  'build/logs/js-coverage/'
+      dir:  'var/logs/js-coverage/'
     }, */
 
     // web server port
@@ -154,7 +156,8 @@ module.exports = function(config) {
       'karma-jasmine',
       'karma-junit-reporter',
       'karma-firefox-launcher',
-      'karma-chrome-launcher'
+      'karma-chrome-launcher',
+      require('./vendor/oro/platform/src/Oro/Bundle/UIBundle/Resources/public/lib/karmawebdriver/karma-selenium4-webdriver-launcher.js')
     ],
 
     webpack: {
@@ -171,4 +174,34 @@ module.exports = function(config) {
       stats: 'errors-only'
     }
   });
+
+  // Selenium Grid integration (use in CI)
+  if (process.env.USE_SELENIUM_GRID === '1') {
+    const webdriverConfig = {
+      hostname: process.env.KARMA_SELENIUM_HOST || 'localhost',
+      port: process.env.KARMA_SELENIUM_PORT || 4444,
+    };
+
+    config.set({
+      customLaunchers: {
+        ChromeWebdriver: {
+          base: 'Selenium4WebDriverLauncher',
+          config: webdriverConfig,
+          browserName: 'chrome',
+          'goog:chromeOptions': {
+            args: [
+              '--disable-dev-shm-usage',
+              '--no-sandbox',
+              '--disable-infobars',
+              '--headless',
+              '--disable-gpu',
+              '--ignore-certificate-errors',
+              '--allow-insecure-localhost',
+            ]
+          }
+        }
+      },
+      browsers: ['ChromeWebdriver']
+    });
+  }
 };
