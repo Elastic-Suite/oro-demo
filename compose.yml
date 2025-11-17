@@ -35,10 +35,11 @@ services:
         user: $ORO_USER_RUNTIME
         env_file: .env
         healthcheck:
-            test: "curl -If http://127.0.0.1:${ORO_NGINX_HTTP_PORT}/"
+            test: [ "CMD", "curl", "-f", "http://localhost" ]
             interval: 15s
             timeout: 30s
             start_period: 15s
+            retries: 5
         ports:
             - target: 80
               mode: host
