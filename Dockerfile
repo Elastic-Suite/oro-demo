@@ -46,6 +46,18 @@ USER root
 ARG UID
 ARG GID
 
+# Install npm
+RUN touch ~/.bashrc \
+    && mkdir -p /var/nvm /usr/share/httpd/.npm\
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | NVM_DIR="/var/nvm" bash \
+    && source ~/.bashrc \
+    && nvm install 22.9.0 \
+    && chmod a+x /var/nvm/versions/node/v22.9.0/bin/* \
+    && chmod a+wx -R /usr/share/httpd/.npm \
+    && ln -s /var/nvm/versions/node/v22.9.0/bin/node /usr/bin/node \
+    && ln -s /var/nvm/versions/node/v22.9.0/bin/npm /usr/bin/npm \
+    && ln -s /var/nvm/versions/node/v22.9.0/bin/npx /usr/bin/npx
+
 RUN usermod -u ${UID} www-data && groupmod -g ${GID} www-data
 RUN mkdir -p /home/www-data /run/php-fpm /var/log/nginx/ /var/www/oro/public /var/www/oro/var/cache /var/www/oro/var/logs /opt/oro-nginx /var/www/oro/node_modules
 RUN chown www-data:www-data -R /home/www-data /var/log/nginx /opt/oro-nginx /var/www/oro/node_modules
