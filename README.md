@@ -22,6 +22,7 @@
     ```shell
     docker compose run --rm install composer config github-oauth.github.com [Your Token]
     docker compose run --rm install composer install
+    docker compose run --rm install npm install
     ```
 
 * Add gally plugin
@@ -36,7 +37,6 @@
 
     ```shell
     docker compose up install
-    docker compose run --rm install npm install
     docker compose up -d
     ```
   > After this step you should have a running oro instance
